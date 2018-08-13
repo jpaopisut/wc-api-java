@@ -1,4 +1,4 @@
-package com.icoderman.woocommerce.oauth;
+package com.icoderman.woocommerce.auth.oauth;
 
 import com.icoderman.woocommerce.HttpMethod;
 import org.apache.commons.codec.binary.Base64;

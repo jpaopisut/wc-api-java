@@ -5,7 +5,7 @@ import com.icoderman.woocommerce.ApiVersionType;
 import com.icoderman.woocommerce.EndpointBaseType;
 import com.icoderman.woocommerce.WooCommerce;
 import com.icoderman.woocommerce.WooCommerceAPI;
-import com.icoderman.woocommerce.oauth.OAuthConfig;
+import com.icoderman.woocommerce.auth.oauth.OAuthConfig;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;

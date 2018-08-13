@@ -1,4 +1,4 @@
-package com.icoderman.woocommerce.oauth;
+package com.icoderman.woocommerce.auth.oauth;
 
 /**
  * Enum with special symbols and their encoded representations

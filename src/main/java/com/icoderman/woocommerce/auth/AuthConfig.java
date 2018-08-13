@@ -1,12 +1,16 @@
-package com.icoderman.woocommerce.oauth;
+package com.icoderman.woocommerce.auth;
 
-public final class OAuthConfig {
+/**
+ *
+ * @author fabricio
+ */
+public abstract class AuthConfig {
 
     private final String url;
     private final String consumerKey;
     private final String consumerSecret;
 
-    public OAuthConfig(String url, String consumerKey, String consumerSecret) {
+    public AuthConfig(String url, String consumerKey, String consumerSecret) {
         if (url == null || url.isEmpty() ||
                 consumerKey == null || consumerKey.isEmpty() ||
                 consumerSecret == null || consumerSecret.isEmpty()) {
@@ -28,4 +32,5 @@ public final class OAuthConfig {
     public String getConsumerSecret() {
         return consumerSecret;
     }
+    
 }

@@ -2,6 +2,7 @@ package com.icoderman.woocommerce;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.icoderman.woocommerce.auth.basic.BasicAuthConfig;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -23,16 +24,32 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.apache.http.auth.AuthenticationException;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.impl.auth.BasicScheme;
 
 public class DefaultHttpClient implements HttpClient {
 
     private static final String CONTENT_TYPE = "Content-Type";
     private static final String APPLICATION_JSON = "application/json";
 
-    private CloseableHttpClient httpClient;
-    private ObjectMapper mapper;
+    protected CloseableHttpClient httpClient;
+    protected ObjectMapper mapper;
+
+    private UsernamePasswordCredentials credentials = null;
 
     public DefaultHttpClient() {
+        init();
+    }
+
+    public DefaultHttpClient(BasicAuthConfig basicAuthConfig) {
+        init();
+        this.credentials = new UsernamePasswordCredentials(
+                basicAuthConfig.getConsumerKey(),
+                basicAuthConfig.getConsumerSecret());
+    }
+
+    private void init() {
         this.httpClient = HttpClientBuilder.create().build();
         this.mapper = new ObjectMapper();
     }
@@ -115,6 +132,10 @@ public class DefaultHttpClient implements HttpClient {
 
     private <T> T getEntityAndReleaseConnection(HttpRequestBase httpRequest, Class<T> objectClass) {
         try {
+            if (this.credentials != null) {
+                httpRequest.addHeader(new BasicScheme().authenticate(this.credentials, httpRequest, null));
+            }
+
             HttpResponse httpResponse = httpClient.execute(httpRequest);
             HttpEntity httpEntity = httpResponse.getEntity();
             if (httpEntity == null) {
@@ -127,6 +148,8 @@ public class DefaultHttpClient implements HttpClient {
             throw new RuntimeException("Can't parse retrieved object: " + result.toString());
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (AuthenticationException e) {
+            throw new RuntimeException("Can't authenticate. " + e.getMessage());
         } finally {
             httpRequest.releaseConnection();
         }
